@@ -44,7 +44,7 @@ The entire process is automated to run **daily** using a **GitHub Actions workfl
 
 2.  **Clone the repository and set up the environment:**
     ```bash
-    git clone https://github.com/YOUR_USERNAME/spotify-data-pipeline.git
+    git clone https://github.com/takzen/spotify-data-pipeline.git
     cd spotify-data-pipeline
     uv venv
     source .venv/bin/activate
