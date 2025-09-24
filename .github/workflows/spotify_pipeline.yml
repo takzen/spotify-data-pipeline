@@ -1,0 +1,37 @@
+name: Daily Spotify Data Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *' # Runs at 8:00 AM UTC every day
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13' # Use a specific Python version
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run the Spotify data script
+        env:
+          SPOTIPY_CLIENT_ID: ${{ secrets.SPOTIPY_CLIENT_ID }}
+          SPOTIPY_CLIENT_SECRET: ${{ secrets.SPOTIPY_CLIENT_SECRET }}
+        run: python spotify_tracker.py
+
+      - name: Commit and push the updated data
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/daily_spotify_releases.csv
+          git commit -m "Automated update: Add daily Spotify releases" || echo "No changes to commit"
+          git push
